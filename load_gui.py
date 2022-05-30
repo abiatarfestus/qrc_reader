@@ -131,7 +131,8 @@ class MainWindow(QDialog):
         self.btn_exit.clicked.connect(self.exit_app)
         self.btn_update_office.clicked.connect(self.add_update_office)
         self.btn_update_location.clicked.connect(self.add_update_location)
-        self.btn_launch_camera.clicked.connect(self.set_camera_button_function)
+        # self.btn_launch_camera_slot = self.launch_camera
+        self.btn_launch_camera.clicked.connect(self.launch_camera)
         self.btn_generate_file.clicked.connect(self.generate_file)
         self.cbx_office.currentIndexChanged.connect(self.set_office)
         self.cbx_location.currentIndexChanged.connect(self.set_location)
@@ -139,17 +140,17 @@ class MainWindow(QDialog):
         self.load_locations()
         # self.load_video_frame()
 
-    def set_camera_button_function(self, function=None):
-        if self.camera_on:
-            function()
-        else:
-            self.launch_camera()
+    # def set_camera_button_function(self, function=None):
+    #     if self.camera_on:
+    #         function()
+    #     else:
+    #         self.launch_camera()
 
     def update_scanned(self, vars):
         self.lbl_id_number.setText(vars[0])
         self.lbl_application_number.setText(vars[1])
         self.lbl_name.setText(vars[2])
-        self.lc_total_scanned.display(vars[3])
+        self.lcd_total_scanned.display(vars[3])
     
     def reset_scanned(self):
         self.lbl_id_number.setText('None')
@@ -224,6 +225,7 @@ class MainWindow(QDialog):
         if  display_message("confirm_reset") == QMessageBox.Yes:
             self.camera_on = True
             self.btn_launch_camera.setText("Stop Video")
+            self.btn_launch_camera.clicked.disconnect(self.launch_camera)
             self.reset_scanned()
             self.thread = QThread()
             self.worker = Worker()
