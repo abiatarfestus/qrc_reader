@@ -16,7 +16,6 @@ class Worker(QObject):
 
     def __init__(self):
         super(Worker, self).__init__()
-        self.scan_count = 0
         self.id_numbers = set()
         # self.timestamp_ = int(datetime.timestamp(datetime.now()))
         # self.file_name = f'Inventory_{self.timestamp_}.csv'
@@ -32,12 +31,17 @@ class Worker(QObject):
                     qt_image = QImage(frame, frame.shape[1], frame.shape[0], QImage.Format_RGB888)
                     qt_pixmap = QPixmap.fromImage(qt_image)
                     self.video_feed.emit(qt_pixmap)
-                    id_number = self.get_data(frame)
-                    if id_number:
+                    qrc_data = self.get_data(frame)
+                    id_number = qrc_data[0].strip()
+                    app_number = qrc_data[1]
+                    name = qrc_data[2]
+                    if len(id_number)==11:
+                        print(id_number, app_number, name, len(self.id_numbers))
                         self.id_numbers.add(id_number)
-                        self.scan_count += 1
+                        self.id_scanned.emit([id_number, app_number, name, len(self.id_numbers)])
             except Exception as e:
                 self.str_message.emit(repr(e))
+                self.thread_active = False
                 break
         # cv2.destroyAllWindows()
         self.finished.emit()
@@ -45,25 +49,25 @@ class Worker(QObject):
 
     
     def get_data(self, image):
+        id_number = ""
+        app_number = ""
+        name = ""
         try:
             gray_img = cv2.cvtColor(image, 1)
             qrcode = decode(gray_img, symbols=[ZBarSymbol.QRCODE])
 
             for obj in qrcode:
-                qrcodeData = obj.data.decode("utf-8")
-                id_number = qrcodeData[:11]
+                qrc_data = obj.data.decode("utf-8")
+                print(f"FULL_DATA: {qrc_data}")
+                id_number = qrc_data[:11]
                 app_number = "App_num"
                 name = "Name"
                 winsound.Beep(440, 500)
-                if len(id_number) == 11:
-                    print(id_number, app_number, name, self.scan_count)
-                    self.id_scanned.emit([id_number, app_number, name, self.scan_count])
-                    return id_number
-                else:
-                    return None
         except Exception as e:
-            display_message(repr(e))
-            return None
+            self.str_message.emit(repr(e))
+            self.thread_active = False
+        return [id_number, app_number, name]
+        
         
     
     def stop_video(self):
