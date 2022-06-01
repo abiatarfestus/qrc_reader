@@ -1,5 +1,6 @@
-import os
-import time
+# import os
+# import time
+from excel import ExcelFile
 from PyQt5.uic import loadUi
 from numpy import choose
 from db import (
@@ -129,13 +130,6 @@ class MainWindow(QDialog):
         self.cbx_location.currentIndexChanged.connect(self.set_location)
         self.load_offices()
         self.load_locations()
-        # self.load_video_frame()
-
-    # def set_camera_button_function(self, function=None):
-    #     if self.camera_on:
-    #         function()
-    #     else:
-    #         self.launch_camera()
 
     def update_scanned(self, vars):
         self.lbl_id_number.setText(vars[0])
@@ -165,7 +159,7 @@ class MainWindow(QDialog):
             self.cbx_office.addItem(office[1])
 
     def set_location(self):
-        self.office = self.cbx_office.currentText()
+        self.location = self.cbx_location.currentText()
         return
 
     def set_office(self):
@@ -178,11 +172,14 @@ class MainWindow(QDialog):
         except Exception as e:
                 display_message(repr(e))
         
-    def generate_file(self):
+    def generate_file(self):        
+        print(f"LOCATION: {self.location}")
+        print(f"OFFICE: {self.office}")
         if self.thread_active:
             display_message("Your camera seems to be running. Click Stop Video and try again.")
         else:
-            print("GENERATING Excel File...")
+            new_file = ExcelFile(self.scanned_id_numbers, self.office, self.location)
+            new_file.create_file()
         return
 
     def update_scanned_ids(self, set):
@@ -194,7 +191,6 @@ class MainWindow(QDialog):
         
 
     def video_switch(self):
-        print(self.thread_active)
         if self.thread_active:
             Worker.camera_on = False
             self.thread_active = False

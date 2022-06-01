@@ -19,8 +19,6 @@ class Worker(QObject):
     def __init__(self):
         super(Worker, self).__init__()
         self.id_numbers = set()
-        # self.timestamp_ = int(datetime.timestamp(datetime.now()))
-        # self.file_name = f'Inventory_{self.timestamp_}.csv'
 
     def run(self):
         self.capture = cv2.VideoCapture(0)
@@ -29,7 +27,7 @@ class Worker(QObject):
                 ret, frame = self.capture.read()
                 if ret:
                     # frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-                    qt_image = QImage(frame, frame.shape[1], frame.shape[0], QImage.Format_RGB888)
+                    qt_image = QImage(frame, frame.shape[1], frame.shape[0], QImage.Format_BGR888)
                     qt_pixmap = QPixmap.fromImage(qt_image)
                     self.video_feed.emit(qt_pixmap)
                     qrc_data = self.get_data(frame)
