@@ -1,4 +1,5 @@
 import os
+import time
 from PyQt5.uic import loadUi
 from numpy import choose
 from db import (
@@ -60,16 +61,6 @@ class OfficeDialog(QDialog):
         self.office_updated.emit()
         return
 
-    # def reset(self):
-    #     self.office_name.setText("")
-    #     self.row_id.setText("")
-    #     self.btn_create.setText("Add")
-    #     self.lbl_office_form_heading.setText("Add a New Office to the Database")
-
-    # def force_create(self):
-    #     self.reset()
-    #     self.rbtn_update_office.setCheckable(False)
-
 class LocationDialog(QDialog):
     location_updated = pyqtSignal()
     def __init__(self, rowid=0, record=None):
@@ -125,14 +116,14 @@ class MainWindow(QDialog):
     def __init__(self):
         super(MainWindow, self).__init__()
         loadUi("main_window.ui", self)
-        self.camera_on = False
+        self.thread_active = False
+        self.scanned_id_numbers = set()
         self.office = self.cbx_office.currentText()
         self.location = self.cbx_location.currentText()
         self.btn_exit.clicked.connect(self.exit_app)
         self.btn_update_office.clicked.connect(self.add_update_office)
         self.btn_update_location.clicked.connect(self.add_update_location)
-        # self.btn_launch_camera_slot = self.launch_camera
-        self.btn_launch_camera.clicked.connect(self.launch_camera)
+        self.btn_launch_camera.clicked.connect(self.video_switch)
         self.btn_generate_file.clicked.connect(self.generate_file)
         self.cbx_office.currentIndexChanged.connect(self.set_office)
         self.cbx_location.currentIndexChanged.connect(self.set_location)
@@ -157,6 +148,7 @@ class MainWindow(QDialog):
         self.lbl_application_number.setText('None')
         self.lbl_name.setText('None')
         self.lcd_total_scanned.display(0)
+        self.scanned_id_numbers = set()
 
     def load_locations(self):
         conn = create_connection("mydb.db")
@@ -187,17 +179,37 @@ class MainWindow(QDialog):
                 display_message(repr(e))
         
     def generate_file(self):
-        if self.camera_on:
+        if self.thread_active:
             display_message("Your camera seems to be running. Click Stop Video and try again.")
         else:
             print("GENERATING Excel File...")
         return
 
-    def video_stopped(self):
-        self.camera_on = False
-        self.btn_launch_camera.setText("Launch Camera")
-        self.btn_launch_camera.clicked.connect(self.launch_camera)
-        self.lbl_video_feed.setText("Waiting for video feed")
+    def update_scanned_ids(self, set):
+        self.scanned_id_numbers = set
+        print(self.scanned_id_numbers)
+
+    def waiting_for_video(self, string):
+        self.lbl_video_feed.setText(string)
+        
+
+    def video_switch(self):
+        print(self.thread_active)
+        if self.thread_active:
+            Worker.camera_on = False
+            self.thread_active = False
+            self.btn_launch_camera.setText("Launch Camera")
+            self.btn_launch_camera.setStyleSheet('background-color: None;')
+            # time.sleep(2)
+            # self.lbl_video_feed.setText("Waiting for video feed")
+        else:
+            self.thread_active = True
+            Worker.camera_on = True
+            self.launch_camera()
+            self.btn_launch_camera.setText("Stop Video")
+            self.btn_launch_camera.setStyleSheet('background-color: red;')
+            # setStyleSheet('QPushButton {background-color: #A3C1DA; color: red;}')
+
 
     def add_update_office(self):
         conn = create_connection("mydb.db")
@@ -223,9 +235,7 @@ class MainWindow(QDialog):
 
     def launch_camera(self):
         if  display_message("confirm_reset") == QMessageBox.Yes:
-            self.camera_on = True
-            self.btn_launch_camera.setText("Stop Video")
-            self.btn_launch_camera.clicked.disconnect(self.launch_camera)
+            # self.thread_active = True
             self.reset_scanned()
             self.thread = QThread()
             self.worker = Worker()
@@ -233,9 +243,9 @@ class MainWindow(QDialog):
             self.thread.started.connect(self.worker.run)
             self.worker.video_feed.connect(self.video_feed)
             self.worker.id_scanned.connect(self.update_scanned)
-            self.btn_launch_camera.clicked.connect(self.worker.stop_video)
             self.worker.str_message.connect(display_message)
-            self.worker.finished.connect(self.video_stopped)
+            self.worker.video_ended.connect(self.waiting_for_video)
+            self.worker.finished.connect(self.update_scanned_ids)
             self.worker.finished.connect(self.thread.quit)
             self.thread.finished.connect(self.thread.deleteLater)
             self.worker.finished.connect(self.worker.deleteLater)

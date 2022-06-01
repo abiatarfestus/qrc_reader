@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>733</width>
-    <height>350</height>
+    <width>1049</width>
+    <height>494</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -143,7 +143,7 @@
           </font>
          </property>
          <property name="text">
-          <string>Choose Location</string>
+          <string>Choose Folder</string>
          </property>
         </widget>
        </item>
