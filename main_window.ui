@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1005</width>
-    <height>801</height>
+    <width>967</width>
+    <height>661</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -43,8 +43,8 @@
     <rect>
      <x>10</x>
      <y>70</y>
-     <width>741</width>
-     <height>551</height>
+     <width>701</width>
+     <height>411</height>
     </rect>
    </property>
    <property name="frameShape">
@@ -53,29 +53,25 @@
    <property name="frameShadow">
     <enum>QFrame::Raised</enum>
    </property>
-   <widget class="QLabel" name="lbl_video_feed">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>10</y>
-      <width>721</width>
-      <height>531</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Waiting for video feed</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
+   <layout class="QGridLayout" name="gridLayout_2">
+    <item row="0" column="0">
+     <widget class="QLabel" name="lbl_video_feed">
+      <property name="text">
+       <string>Waiting for video feed</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
   <widget class="QFrame" name="frame_4">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>630</y>
-     <width>741</width>
+     <y>490</y>
+     <width>701</width>
      <height>161</height>
     </rect>
    </property>
@@ -113,7 +109,7 @@
      <rect>
       <x>360</x>
       <y>50</y>
-      <width>371</width>
+      <width>331</width>
       <height>101</height>
      </rect>
     </property>
@@ -264,10 +260,10 @@
   <widget class="QGroupBox" name="groupBox_3">
    <property name="geometry">
     <rect>
-     <x>760</x>
+     <x>720</x>
      <y>60</y>
      <width>231</width>
-     <height>131</height>
+     <height>121</height>
     </rect>
    </property>
    <property name="title">
@@ -306,10 +302,10 @@
   <widget class="QGroupBox" name="groupBox_4">
    <property name="geometry">
     <rect>
-     <x>760</x>
-     <y>250</y>
+     <x>720</x>
+     <y>210</y>
      <width>231</width>
-     <height>131</height>
+     <height>111</height>
     </rect>
    </property>
    <property name="title">
@@ -348,8 +344,8 @@
   <widget class="QFrame" name="frame_3">
    <property name="geometry">
     <rect>
-     <x>760</x>
-     <y>630</y>
+     <x>720</x>
+     <y>490</y>
      <width>231</width>
      <height>161</height>
     </rect>
@@ -402,10 +398,10 @@
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>760</x>
-     <y>440</y>
+     <x>720</x>
+     <y>360</y>
      <width>231</width>
-     <height>181</height>
+     <height>121</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout">
