@@ -24,5 +24,5 @@ class ExcelFile():
             wb.save(filename = destination)
             print(destination)
             display_message(1, file_name=file_name, path=self.directory)
-        except IndexError as e:
+        except Exception as e:
             display_message(repr(e))

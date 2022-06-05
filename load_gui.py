@@ -172,9 +172,7 @@ class MainWindow(QDialog):
         except Exception as e:
                 display_message(repr(e))
         
-    def generate_file(self):        
-        print(f"LOCATION: {self.location}")
-        print(f"OFFICE: {self.office}")
+    def generate_file(self):
         if self.thread_active:
             display_message("Your camera seems to be running. Click Stop Video and try again.")
         else:
