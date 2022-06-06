@@ -21,7 +21,8 @@ class Worker(QObject):
         self.id_numbers = set()
 
     def run(self):
-        self.capture = cv2.VideoCapture(0, apiPreference=cv2.CAP_ANY, params=[cv2.CAP_PROP_FRAME_WIDTH, 1280, cv2.CAP_PROP_FRAME_HEIGHT, 720])
+        self.capture = cv2.VideoCapture(0)
+        # self.capture = cv2.VideoCapture(0, apiPreference=cv2.CAP_ANY, params=[cv2.CAP_PROP_FRAME_WIDTH, 1280, cv2.CAP_PROP_FRAME_HEIGHT, 720])
         while self.camera_on:
             try:
                 ret, frame = self.capture.read()
