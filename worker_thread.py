@@ -1,6 +1,6 @@
 import cv2
 import winsound
-# import numpy as np
+import numpy as np
 # from datetime import datetime
 # from popups import display_message
 from pyzbar.pyzbar import decode, ZBarSymbol
@@ -27,11 +27,13 @@ class Worker(QObject):
             try:
                 ret, frame = self.capture.read()
                 if ret:
-                    # frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-                    qt_image = QImage(frame, frame.shape[1], frame.shape[0], QImage.Format_BGR888)
+                    # get_data() outputs a list qrc_data and an image/frame to coverted to QPixmap
+                    qrc_data, image = self.get_data(frame)
+                    # change the image/video frame to QImage>QPixmap
+                    qt_image = QImage(image, image.shape[1], image.shape[0], QImage.Format_BGR888)
                     qt_pixmap = QPixmap.fromImage(qt_image)
                     self.video_feed.emit(qt_pixmap)
-                    qrc_data = self.get_data(frame)
+                    # process the qrc_data
                     id_number = qrc_data[0].strip()
                     app_number = qrc_data[1]
                     name = qrc_data[2]
@@ -43,10 +45,10 @@ class Worker(QObject):
                 self.thread_active = False
                 break
         # cv2.destroyAllWindows()
-        width = self.capture.get(cv2.CAP_PROP_FRAME_WIDTH)
-        height = self.capture.get(cv2.CAP_PROP_FRAME_HEIGHT)
-        print(f"{width}x{height}")
-        print(self.capture.get(cv2.CAP_PROP_FPS))
+        # width = self.capture.get(cv2.CAP_PROP_FRAME_WIDTH)
+        # height = self.capture.get(cv2.CAP_PROP_FRAME_HEIGHT)
+        # print(f"{width}x{height}")
+        # print(self.capture.get(cv2.CAP_PROP_FPS))
         self.video_ended.emit("Waiting for video feed")
         self.finished.emit(self.id_numbers)
         self.capture.release()
@@ -57,11 +59,14 @@ class Worker(QObject):
         app_number = ""
         name = ""
         try:
-            gray_img = cv2.cvtColor(image, 1)
-            qrcode = decode(gray_img, symbols=[ZBarSymbol.QRCODE])
+            image = cv2.cvtColor(image, 1)
+            qrcode = decode(image, symbols=[ZBarSymbol.QRCODE])
 
             for obj in qrcode:
                 qrc_data = obj.data.decode("utf-8")
+                pts = np.array([obj.polygon], np.int32)
+                pts = pts.reshape((-1, 1, 2))
+                cv2.polylines(image, [pts], True, (0, 255, 0), 2)
                 qrc_data_list = qrc_data.split(";")
                 id_number = qrc_data_list[0]
                 app_number = qrc_data_list[-1]
@@ -72,4 +77,4 @@ class Worker(QObject):
         except Exception as e:
             self.str_message.emit(repr(e))
             self.thread_active = False
-        return [id_number, app_number, name]
+        return [id_number, app_number, name], image

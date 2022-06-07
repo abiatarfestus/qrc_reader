@@ -19,7 +19,7 @@ class ExcelFile():
             wb = load_workbook(filename = 'template.xlsx')
             ws = wb.active
             for id_number in self.id_numbers:
-                ws[f"B{count}"] = id_number
+                ws[f"C{count}"] = id_number
                 count += 1
             wb.save(filename = destination)
             print(destination)
