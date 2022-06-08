@@ -66,7 +66,7 @@ class Worker(QObject):
                 qrc_data = obj.data.decode("utf-8")
                 pts = np.array([obj.polygon], np.int32)
                 pts = pts.reshape((-1, 1, 2))
-                cv2.polylines(image, [pts], True, (0, 255, 0), 2)
+                cv2.polylines(image, [pts], True, (0, 255, 0), 5)
                 qrc_data_list = qrc_data.split(";")
                 id_number = qrc_data_list[0]
                 app_number = qrc_data_list[-1]
