@@ -28,6 +28,7 @@ class Worker(QObject):
                 ret, frame = self.capture.read()
                 if ret:
                     # get_data() outputs a list qrc_data and an image/frame to coverted to QPixmap
+                    frame =  cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
                     qrc_data, image = self.get_data(frame)
                     # change the image/video frame to QImage>QPixmap
                     qt_image = QImage(image, image.shape[1], image.shape[0], QImage.Format_BGR888)
