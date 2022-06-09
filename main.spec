@@ -7,7 +7,7 @@ block_cipher = None
 a = Analysis(
     ['main.py'],
     pathex=[],
-    binaries=[('C:\\Users\\abiat\\OneDrive\\Documents\\My Code\\qrc_reader\\.env\\Lib\\site-packages\\pyzbar\\libiconv.dll', 'pyzbar'), ('C:\\Users\\abiat\\OneDrive\\Documents\\My Code\\qrc_reader\\.env\\Lib\\site-packages\\pyzbar\\libzbar-64.dll', 'pyzbar')],
+    binaries=[('C:\\Users\\Festus Abiatar\\OneDrive\\Code\\qrc_reader\\.env\\Lib\\site-packages\\pyzbar\\libiconv.dll', 'pyzbar'), ('C:\\Users\\Festus Abiatar\\OneDrive\\Code\\qrc_reader\\.env\\Lib\\site-packages\\pyzbar\\libzbar-64.dll', 'pyzbar')],
     datas=[],
     hiddenimports=[],
     hookspath=[],
