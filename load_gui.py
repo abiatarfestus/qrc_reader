@@ -1,8 +1,5 @@
-# import os
-# import time
 from excel import ExcelFile
 from PyQt5.uic import loadUi
-from numpy import choose
 from db import (
     setup_db,
     create_connection,
@@ -13,12 +10,10 @@ from db import (
     update_office,
     update_location
 )
-from functools import partial
 from popups import display_message
 from worker_thread import Worker
 from PyQt5.QtCore import QThread, pyqtSignal, QCoreApplication
 from PyQt5.QtWidgets import QDialog, QMessageBox, QFileDialog
-from PyQt5.QtGui import QImage, QPixmap
 
 setup_db()
 
@@ -44,20 +39,17 @@ class OfficeDialog(QDialog):
             self.btn_create.setText("Update")
         self.btn_create.clicked.connect(self.create_update_office)
         self.btn_cancel.clicked.connect(self.close)
-        # self.rbtn_create_office.toggled.connect(self.force_create)
 
     def create_update_office(self):
         office_name = self.office_name.text().strip()
         conn = create_connection("mydb.db")
         if self.rbtn_create_office.isChecked():
             if create_office(conn, (office_name,)):
-                # self.reset()
                 self.close()
         else:
             rowid = int(self.row_id.text())
             if display_message("confirm_update") == QMessageBox.Yes:
                 if update_office(conn, (office_name, rowid)):
-                    # self.rbtn_create_office.setChecked(True)
                     self.close()
         self.office_updated.emit()
         return
@@ -87,12 +79,10 @@ class LocationDialog(QDialog):
         self.btn_choose_location.clicked.connect(self.choose_folder)
         self.btn_create.clicked.connect(self.create_update_location)
         self.btn_cancel.clicked.connect(self.close)
-        # self.rbtn_create_location.toggled.connect(self.force_create)
 
     def choose_folder(self):
         output_folder_path = str(QFileDialog.getExistingDirectory(self, "Select Directory"))
         self.txt_location_path.setText(output_folder_path)
-        # print(f"OUTPUT: {output_folder_path}")
         return
 
 
@@ -102,13 +92,11 @@ class LocationDialog(QDialog):
             conn = create_connection("mydb.db")
             if self.rbtn_create_location.isChecked():
                 if create_location(conn, (self.location_path,)):
-                    # self.reset()
                     self.close()
             else:
                 rowid = int(self.row_id.text())
                 if display_message("confirm_update") == QMessageBox.Yes:
                     if update_location(conn, (self.location_path, rowid)):
-                        # self.rbtn_create_location.setChecked(True)
                         self.close()
         self.location_updated.emit()
         return
@@ -193,15 +181,8 @@ class MainWindow(QDialog):
             self.thread_active = False
             self.btn_launch_camera.setText("Launch Camera")
             self.btn_launch_camera.setStyleSheet('background-color: None;')
-            # time.sleep(2)
-            # self.lbl_video_feed.setText("Waiting for video feed")
         else:
-            self.thread_active = True
-            Worker.camera_on = True
             self.launch_camera()
-            self.btn_launch_camera.setText("Stop Video")
-            self.btn_launch_camera.setStyleSheet('background-color: red;')
-            # setStyleSheet('QPushButton {background-color: #A3C1DA; color: red;}')
 
 
     def add_update_office(self):
@@ -228,7 +209,10 @@ class MainWindow(QDialog):
 
     def launch_camera(self):
         if  display_message("confirm_reset") == QMessageBox.Yes:
-            # self.thread_active = True
+            self.thread_active = True
+            Worker.camera_on = True
+            self.btn_launch_camera.setText("Stop Video")
+            self.btn_launch_camera.setStyleSheet('background-color: red;')
             self.reset_scanned()
             self.thread = QThread()
             self.worker = Worker()

@@ -1,8 +1,6 @@
 import cv2
 import winsound
 import numpy as np
-# from datetime import datetime
-# from popups import display_message
 from pyzbar.pyzbar import decode, ZBarSymbol
 from PyQt5.QtCore import QObject, pyqtSignal
 from PyQt5.QtGui import QImage, QPixmap
@@ -24,7 +22,6 @@ class Worker(QObject):
         self.capture = cv2.VideoCapture(0)
         self.capture.set(cv2.CAP_PROP_AUTOFOCUS, 0)
         self.capture.set(cv2.CAP_PROP_FOCUS, 100)
-        # self.capture = cv2.VideoCapture(0, apiPreference=cv2.CAP_ANY, params=[cv2.CAP_PROP_FRAME_WIDTH, 1280, cv2.CAP_PROP_FRAME_HEIGHT, 720])
         while self.camera_on:
             try:
                 ret, frame = self.capture.read()
@@ -47,11 +44,6 @@ class Worker(QObject):
                 self.str_message.emit(repr(e))
                 self.thread_active = False
                 break
-        # cv2.destroyAllWindows()
-        # width = self.capture.get(cv2.CAP_PROP_FRAME_WIDTH)
-        # height = self.capture.get(cv2.CAP_PROP_FRAME_HEIGHT)
-        # print(f"{width}x{height}")
-        # print(self.capture.get(cv2.CAP_PROP_FPS))
         self.video_ended.emit("Waiting for video feed")
         self.finished.emit(self.id_numbers)
         self.capture.release()
