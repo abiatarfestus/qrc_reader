@@ -182,7 +182,6 @@ class MainWindow(QDialog):
 
     def update_scanned_ids(self, set):
         self.scanned_id_numbers = set
-        print(self.scanned_id_numbers)
 
     def waiting_for_video(self, string):
         self.lbl_video_feed.setText(string)
