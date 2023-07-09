@@ -18,9 +18,7 @@ def display_message(message, office=None, path=None, record=None, file_name=""):
         msg.setIcon(QMessageBox.Warning)
         msg.setStandardButtons(QMessageBox.No | QMessageBox.Yes)
         msg.setWindowTitle("Confirm Update")
-        msg.setText(
-            "This operation will modify the selected database record."
-        )
+        msg.setText("This operation will modify the selected database record.")
         msg.setInformativeText("Would you like to proceed?")
         response = msg.exec_()
         return response
@@ -29,9 +27,7 @@ def display_message(message, office=None, path=None, record=None, file_name=""):
         msg.setIcon(QMessageBox.Warning)
         msg.setStandardButtons(QMessageBox.No | QMessageBox.Yes)
         msg.setWindowTitle("Confirm Delete")
-        msg.setText(
-            f"This operation will delete {record} from the database."
-        )
+        msg.setText(f"This operation will delete {record} from the database.")
         msg.setInformativeText("Would you like to proceed?")
         response = msg.exec_()
         return response
@@ -61,7 +57,9 @@ def display_message(message, office=None, path=None, record=None, file_name=""):
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Information)
         msg.setWindowTitle("Confirmation")
-        msg.setText(f"An Excel file {file_name} was successfully created at this location:\n{path}")
+        msg.setText(
+            f"An Excel file {file_name} was successfully created at this location:\n{path}"
+        )
         msg.setInformativeText("Verify the file and upload to NPRS")
         msg.exec_()
     elif message == "no_file":
@@ -69,7 +67,9 @@ def display_message(message, office=None, path=None, record=None, file_name=""):
         msg.setIcon(QMessageBox.Critical)
         msg.setWindowTitle("Error")
         msg.setText("Either the file, month or office is not selected for processing!")
-        msg.setInformativeText("Please ensure that you've selected the file with payslips, the office and the pay month.")
+        msg.setInformativeText(
+            "Please ensure that you've selected the file with payslips, the office and the pay month."
+        )
         msg.exec_()
     elif message == "success_update":
         msg = QMessageBox()

@@ -14,12 +14,14 @@ class Worker(QObject):
     str_message = pyqtSignal(str)
     camera_on = None
 
-    def __init__(self):
+    def __init__(self, camera_index):
         super(Worker, self).__init__()
         self.id_numbers = set()
+        self.camera_index = camera_index
 
     def run(self):
-        self.capture = cv2.VideoCapture(0)
+        print(f"Using camera at index: {self.camera_index}")
+        self.capture = cv2.VideoCapture(self.camera_index)
         self.capture.set(cv2.CAP_PROP_AUTOFOCUS, 0)
         self.capture.set(cv2.CAP_PROP_FOCUS, 100)
         while self.camera_on:
@@ -27,19 +29,23 @@ class Worker(QObject):
                 ret, frame = self.capture.read()
                 if ret:
                     # get_data() outputs a list qrc_data and an image/frame to coverted to QPixmap
-                    frame =  cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
                     qrc_data, image = self.get_data(frame)
                     # change the image/video frame to QImage>QPixmap
-                    qt_image = QImage(image, image.shape[1], image.shape[0], QImage.Format_BGR888)
+                    qt_image = QImage(
+                        image, image.shape[1], image.shape[0], QImage.Format_BGR888
+                    )
                     qt_pixmap = QPixmap.fromImage(qt_image)
                     self.video_feed.emit(qt_pixmap)
                     # process the qrc_data
                     id_number = qrc_data[0].strip()
                     app_number = qrc_data[1]
                     name = qrc_data[2]
-                    if len(id_number)==11:
+                    if len(id_number) == 11:
                         self.id_numbers.add(id_number)
-                        self.id_scanned.emit([id_number, app_number, name, len(self.id_numbers)])
+                        self.id_scanned.emit(
+                            [id_number, app_number, name, len(self.id_numbers)]
+                        )
             except Exception as e:
                 self.str_message.emit(repr(e))
                 self.thread_active = False
@@ -48,7 +54,6 @@ class Worker(QObject):
         self.finished.emit(self.id_numbers)
         self.capture.release()
 
-    
     def get_data(self, image):
         id_number = ""
         app_number = ""
@@ -68,7 +73,7 @@ class Worker(QObject):
                 name = f"{qrc_data_list[1]} {qrc_data_list[2]}"
                 winsound.Beep(440, 500)
         except IndexError:
-                pass
+            pass
         except Exception as e:
             self.str_message.emit(repr(e))
             self.thread_active = False

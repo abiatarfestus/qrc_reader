@@ -31,6 +31,7 @@ def create_table(conn, create_table_sql):
     except Error as e:
         display_message(repr(e))
 
+
 def create_location(conn, location):
     """
     Create a new location
@@ -74,7 +75,6 @@ def create_office(conn, name):
         display_message(repr(e))
         return False
     return True
-
 
 
 def update_location(conn, location):
@@ -124,6 +124,7 @@ def update_office(conn, office):
         return False
     return True
 
+
 def select_location(conn):
     """
     Query all rows in the locations table
@@ -166,9 +167,7 @@ def select_office(conn):
     """
     try:
         cur = conn.cursor()
-        cur.execute(
-            "SELECT rowid, name FROM offices WHERE rowid=1"
-        )
+        cur.execute("SELECT rowid, name FROM offices WHERE rowid=1")
 
         row = cur.fetchone()
         return row

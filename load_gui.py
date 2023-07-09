@@ -8,7 +8,7 @@ from db import (
     select_office,
     select_location,
     update_office,
-    update_location
+    update_location,
 )
 from popups import display_message
 from worker_thread import Worker
@@ -17,8 +17,10 @@ from PyQt5.QtWidgets import QDialog, QMessageBox, QFileDialog
 
 setup_db()
 
+
 class OfficeDialog(QDialog):
     office_updated = pyqtSignal()
+
     def __init__(self, rowid=0, record=None):
         super(OfficeDialog, self).__init__()
         loadUi("office_form.ui", self)
@@ -54,8 +56,10 @@ class OfficeDialog(QDialog):
         self.office_updated.emit()
         return
 
+
 class LocationDialog(QDialog):
     location_updated = pyqtSignal()
+
     def __init__(self, rowid=0, record=None):
         super(LocationDialog, self).__init__()
         loadUi("location_form.ui", self)
@@ -81,10 +85,11 @@ class LocationDialog(QDialog):
         self.btn_cancel.clicked.connect(self.close)
 
     def choose_folder(self):
-        output_folder_path = str(QFileDialog.getExistingDirectory(self, "Select Directory"))
+        output_folder_path = str(
+            QFileDialog.getExistingDirectory(self, "Select Directory")
+        )
         self.txt_location_path.setText(output_folder_path)
         return
-
 
     def create_update_location(self):
         if self.txt_location_path:
@@ -101,6 +106,7 @@ class LocationDialog(QDialog):
         self.location_updated.emit()
         return
 
+
 class MainWindow(QDialog):
     def __init__(self):
         super(MainWindow, self).__init__()
@@ -109,6 +115,8 @@ class MainWindow(QDialog):
         self.scanned_id_numbers = set()
         self.office = self.cbx_office.currentText()
         self.location = self.cbx_location.currentText()
+        self.camera_index = int(self.spx_camera_index.value())
+        self.spx_camera_index.valueChanged.connect(self.set_camera_index)
         self.btn_exit.clicked.connect(self.exit_app)
         self.btn_update_office.clicked.connect(self.add_update_office)
         self.btn_update_location.clicked.connect(self.add_update_location)
@@ -124,11 +132,11 @@ class MainWindow(QDialog):
         self.lbl_application_number.setText(vars[1])
         self.lbl_name.setText(vars[2])
         self.lcd_total_scanned.display(vars[3])
-    
+
     def reset_scanned(self):
-        self.lbl_id_number.setText('None')
-        self.lbl_application_number.setText('None')
-        self.lbl_name.setText('None')
+        self.lbl_id_number.setText("None")
+        self.lbl_application_number.setText("None")
+        self.lbl_name.setText("None")
         self.lcd_total_scanned.display(0)
         self.scanned_id_numbers = set()
 
@@ -153,16 +161,22 @@ class MainWindow(QDialog):
     def set_office(self):
         self.office = self.cbx_office.currentText()
         return
+    
+    def set_camera_index(self):
+        self.camera_index = int(self.spx_camera_index.value())
+        return
 
     def video_feed(self, image):
         try:
             self.lbl_video_feed.setPixmap(image)
         except Exception as e:
-                display_message(repr(e))
-        
+            display_message(repr(e))
+
     def generate_file(self):
         if self.thread_active:
-            display_message("Your camera seems to be running. Click Stop Video and try again.")
+            display_message(
+                "Your camera seems to be running. Click Stop Video and try again."
+            )
         else:
             new_file = ExcelFile(self.scanned_id_numbers, self.office, self.location)
             new_file.create_file()
@@ -173,17 +187,15 @@ class MainWindow(QDialog):
 
     def waiting_for_video(self, string):
         self.lbl_video_feed.setText(string)
-        
 
     def video_switch(self):
         if self.thread_active:
             Worker.camera_on = False
             self.thread_active = False
             self.btn_launch_camera.setText("Launch Camera")
-            self.btn_launch_camera.setStyleSheet('background-color: None;')
+            self.btn_launch_camera.setStyleSheet("background-color: None;")
         else:
             self.launch_camera()
-
 
     def add_update_office(self):
         conn = create_connection("mydb.db")
@@ -208,14 +220,14 @@ class MainWindow(QDialog):
         self.location_dialog.show()
 
     def launch_camera(self):
-        if  display_message("confirm_reset") == QMessageBox.Yes:
+        if display_message("confirm_reset") == QMessageBox.Yes:
             self.thread_active = True
             Worker.camera_on = True
             self.btn_launch_camera.setText("Stop Video")
-            self.btn_launch_camera.setStyleSheet('background-color: red;')
+            self.btn_launch_camera.setStyleSheet("background-color: red;")
             self.reset_scanned()
             self.thread = QThread()
-            self.worker = Worker()
+            self.worker = Worker(self.camera_index)
             self.worker.moveToThread(self.thread)
             self.thread.started.connect(self.worker.run)
             self.worker.video_feed.connect(self.video_feed)
