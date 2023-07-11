@@ -19,4 +19,4 @@ except:
     print("Exiting")
 
 # https://stackoverflow.com/questions/67886525/got-this-error-on-my-pyzbar-program-after-i-converted-to-exe-with-pyinstaller
-# pyinstaller -w --add-binary "C:\Users\Festus Abiatar\OneDrive\Code\qrc_reader\.env\Lib\site-packages\pyzbar\libiconv.dll;pyzbar" --add-binary "C:\Users\Festus Abiatar\OneDrive\Code\qrc_reader\.env\Lib\site-packages\pyzbar\libzbar-64.dll;pyzbar" main.py
+# pyinstaller -w --add-binary "C:\Users\festus.abiatar\OneDrive\Code\qrc_reader\venv\Lib\site-packages\pyzbar\libiconv.dll;pyzbar" --add-binary "C:\Users\festus.abiatar\OneDrive\Code\qrc_reader\venv\Lib\site-packages\pyzbar\libzbar-64.dll;pyzbar" main.py

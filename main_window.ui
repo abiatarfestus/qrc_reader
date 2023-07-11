@@ -32,7 +32,7 @@
     <string notr="true">color: rgb(85, 170, 255);</string>
    </property>
    <property name="text">
-    <string>ID Inventory Tool v1.0</string>
+    <string>ID Inventory Tool v1.1</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
@@ -262,7 +262,7 @@
       <x>650</x>
       <y>10</y>
       <width>42</width>
-      <height>22</height>
+      <height>31</height>
      </rect>
     </property>
     <property name="font">
@@ -274,10 +274,10 @@
    <widget class="QLabel" name="lbl_camera_index">
     <property name="geometry">
      <rect>
-      <x>530</x>
+      <x>480</x>
       <y>10</y>
-      <width>121</width>
-      <height>20</height>
+      <width>151</width>
+      <height>21</height>
      </rect>
     </property>
     <property name="font">
@@ -434,7 +434,7 @@
      <x>720</x>
      <y>351</y>
      <width>231</width>
-     <height>131</height>
+     <height>142</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout">
