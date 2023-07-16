@@ -20,3 +20,6 @@ except:
 
 # https://stackoverflow.com/questions/67886525/got-this-error-on-my-pyzbar-program-after-i-converted-to-exe-with-pyinstaller
 # pyinstaller -w --add-binary "C:\Users\festus.abiatar\OneDrive\Code\qrc_reader\venv\Lib\site-packages\pyzbar\libiconv.dll;pyzbar" --add-binary "C:\Users\festus.abiatar\OneDrive\Code\qrc_reader\venv\Lib\site-packages\pyzbar\libzbar-64.dll;pyzbar" main.py
+
+#Fix execution problem
+#https://stackoverflow.com/questions/56199111/visual-studio-code-cmd-error-cannot-be-loaded-because-running-scripts-is-disabl/67420296#67420296
